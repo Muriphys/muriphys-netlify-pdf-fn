@@ -1,21 +1,15 @@
 // netlify/functions/send-pdf.js
-const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-exports.handler = async (event) => {
-  // 1) Always return CORS headers
-  const CORS_HEADERS = {
-    "Access-Control-Allow-Origin":  "*",                        // or your Shopify domain
-    "Access-Control-Allow-Headers": "Content-Type,x-api-key",
-    "Access-Control-Allow-Methods": "OPTIONS,POST"
-  };
-
-  // 2) Handle the preflight OPTIONS request
-  if (event.httpMethod === "OPTIONS") {
+  } catch (err) {
+    console.error(
+      "SendGrid error:", 
+      err.response?.body?.errors || err.message
+    );
     return {
-      statusCode: 200,
+      statusCode: 500,
       headers:    CORS_HEADERS,
-      body:       ""
+      body:       JSON.stringify({
+        error: err.response?.body?.errors || err.message
+      })
     };
   }
 
